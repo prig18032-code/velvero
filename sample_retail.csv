@@ -1,0 +1,4 @@
+date,order_id,sku,product_name,quantity,unit_price,total_amount,payment_type,staff
+2025-06-01,ORD001,SKU-001,Blue Mug,2,8.50,17.00,card,Anita
+2025-06-02,ORD002,SKU-002,Green Tea,1,3.50,3.50,cash,Raj
+2025-06-03,ORD003,SKU-001,Blue Mug,1,8.50,8.50,card,Anita
