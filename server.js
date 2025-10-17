@@ -1,4 +1,3 @@
-// server.js
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
@@ -6,8 +5,17 @@ import fs from 'fs';
 import { parse } from 'csv-parse/sync';
 import path from 'path';
 import dotenv from 'dotenv';
+import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
+
+const SUPABASE_URL = process.env.SUPABASE_URL || '';
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || '';
+
+let supabase = null;
+if (SUPABASE_URL && SUPABASE_KEY) {
+  supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+}
 
 const app = express();
 app.use(cors());
@@ -72,11 +80,29 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
   }
 });
 
+app.post('/api/save', async (req, res) => {
+  try {
+    if (!supabase) return res.status(400).json({ error: 'Supabase not configured' });
+    const { email, kpis, sample } = req.body || {};
+    if (!email) return res.status(400).json({ error: 'email is required' });
+    const payload = { email, kpis, sample, created_at: new Date().toISOString() };
+    const { data, error } = await supabase.from('reports').insert([payload]).select();
+    if (error) {
+      console.error('Supabase insert error', error);
+      return res.status(500).json({ error: 'Supabase insert failed', details: error.message });
+    }
+    return res.json({ ok: true, data });
+  } catch (err) {
+    console.error('Save error', err);
+    return res.status(500).json({ error: 'save failed', details: String(err?.message || err) });
+  }
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('public/index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Velvero SaaS MVP running at http://localhost:${PORT}`);
+  console.log(`Velvero SaaS (Supabase) running at http://localhost:${PORT}`);
 });
