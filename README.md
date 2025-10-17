@@ -1,32 +1,23 @@
-Velvero SaaS — Supabase-enabled MVP
-==================================
 
-This package runs a small Node.js app that accepts CSV uploads, calculates KPIs,
-shows charts, and can save reports to Supabase (if you configure env vars).
+# Velvero Analytics - Starter MVP
 
-Quick local run (PowerShell):
+This is a starter scaffold for Velvero Analytics (CSV -> Dashboard -> AI insights).
+It contains a minimal Next.js + TypeScript + Tailwind structure with API endpoints for CSV upload and LLM insights adapter.
 
-1. Unzip this project to a folder, e.g. F:\velvero-saas-supabase
-2. Open PowerShell and cd to that folder
-3. Copy the example .env.example to .env and fill your Supabase values (optional)
-   copy .env.example .env
-   (edit .env with your SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY)
-4. Install dependencies:
-   npm install
-5. Start server:
-   npm start
-6. Open browser: http://localhost:3000
-7. Upload sample_retail.csv to see the demo.
-8. If you configured Supabase and created the reports table (SQL provided),
-   you can Save report from the page (enter an email).
+## What is included
+- Minimal Next.js app structure (pages, components)
+- API routes: /api/upload (CSV), /api/insights (LLM adapter), /api/stripe-webhook (scaffold)
+- LLM adapter (supports env var driven provider selection)
+- .env.example
+- Basic package.json for local development (install deps and run `npm run dev`)
+- Simple demo dashboard component using Recharts (static sample)
 
-Supabase setup (brief):
-- Create free project at https://app.supabase.com
-- From SQL Editor, run the SQL in supabase/create_reports_table.sql
-- Get Service role key from Project Settings -> API -> Service Role Key
-- Put SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY into .env file
+## Local setup
+1. Copy `.env.example` to `.env.local` and fill any keys you have (OPENAI_API_KEY etc.).
+2. `npm install`
+3. `npm run dev`
+4. Open http://localhost:3000
 
-Security note:
-- For production, do NOT expose service-role key to client. This app uses it on server-side only.
-- Later we will implement proper auth and row-level security.
-
+Notes:
+- The project expects Node 18+.
+- Payments are scaffolded but disabled unless STRIPE_SECRET_KEY is set.
